@@ -24,13 +24,12 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"math/rand"
 	"reflect"
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/ethereum/go-ethereum/log"
 )
 
 var (
@@ -366,10 +365,9 @@ func (sub *ClientSubscription) forward() (unsubscribeServer bool, err error) {
 }
 
 func (sub *ClientSubscription) unmarshal(result json.RawMessage) (interface{}, error) {
-	log.Info("raw json is: %s", string(result))
 	val := reflect.New(sub.etype)
 	err := json.Unmarshal(result, val.Interface())
-	return val.Elem().Interface(), err
+	return val.Elem().Interface(), fmt.Errorf("error: %v, result: %v", err, string(result))
 }
 
 func (sub *ClientSubscription) requestUnsubscribe() error {
